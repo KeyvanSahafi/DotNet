@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Test1
 {
@@ -37,9 +38,9 @@ public class Income
 {
     public Income(string name, int income, int workinghours)
     {
-        this._name = name;
-        this._income = income;
-        this._time = workinghours;
+        this.Name = name;
+        this.IncomeCal = income;
+        this.Time = workinghours;
     }
     private string _name;
     public string Name
@@ -52,7 +53,7 @@ public class Income
     public int IncomeCal
     {
         get { return _income; }
-        set {_income = value; }
+        set { _income = value; }
     }
     private int _time;
     public int Time
@@ -62,7 +63,7 @@ public class Income
     }
     public int Salary()
     {
-        int salary = _time * _income * 24;
+        int salary = Time * IncomeCal * 24;
         return salary;
     }
 }
