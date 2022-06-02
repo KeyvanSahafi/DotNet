@@ -9,18 +9,15 @@ namespace Test1
             System.Console.Write("How Many Employee Do you have (Enter an Int): ");
             int numberofemployees = Convert.ToInt32(System.Console.ReadLine());
             List<Income> Lstclass = new List<Income>();
-            string? a = "";
-            int b = 0;
-            int c = 0;
             for (int i = 1; i <= numberofemployees; i++)
             {
                 System.Console.Write($"Enter employee #{i}'s Name: ");
-                a = System.Console.ReadLine();
+                string name = System.Console.ReadLine();
                 System.Console.Write($"Enter employee #{i}'s Income: ");
-                b = Convert.ToInt32(System.Console.ReadLine());
+                int income = Convert.ToInt32(System.Console.ReadLine());
                 System.Console.Write($"Enter employee #{i}'s Working Hours: ");
-                c = Convert.ToInt32(System.Console.ReadLine());
-                Income List = new Income(a, b, c);
+                int workinghours = Convert.ToInt32(System.Console.ReadLine());
+                Income List = new Income(name, income, workinghours);
                 Lstclass.Add(List);
                 System.Console.WriteLine();
             }
@@ -29,7 +26,7 @@ namespace Test1
             System.Console.WriteLine($"Name: {item.Name}");
             System.Console.WriteLine($"Wage per Hour: {item.IncomeCal}");
             System.Console.WriteLine($"Working Hours in a Day: {item.Time}");
-            System.Console.WriteLine($"Total Income: {item.IncomeCal * item.Time * 24}");
+            System.Console.WriteLine($"Total Income: {item.Salary()}");
             System.Console.WriteLine();
             }
         }
@@ -62,5 +59,10 @@ public class Income
     {
         get { return _time; }
         set { _time = value; }
+    }
+    public int Salary()
+    {
+        int salary = _time * _income * 24;
+        return salary;
     }
 }
