@@ -8,7 +8,7 @@ namespace Test1
         static void Main(string[] args)
         {
             string Word = RandomWord();
-            // Console.WriteLine(Word); // For Testing The Program
+            Console.WriteLine(Word); // For Testing The Program
             int Length = Word.Length;
             int attempts = 6;
             int RemainingLetters = 0;
@@ -21,67 +21,87 @@ namespace Test1
                 System.Console.Write("Please Guess A Letter: ");
                 string? chr = System.Console.ReadLine();
                 Letter.Add(chr);
-                RemainingLetters = SearchLetter(chr, Word);
-                attempts--;
-                Length = Length - RemainingLetters;
-                switch (attempts)
+                if (SearchList(Letter, chr) == false)
                 {
-                    case 5:
-                    HangingPic = Map();
-                    HangingPic[11] = "O";
+                    System.Console.WriteLine("Wrong Input OR Repetitive Input");
+                }     
+                RemainingLetters = SearchLetter(chr, Word);
+                if (SearchList(Letter, chr) == true)
+                    Length = Length - RemainingLetters;
+                if (RemainingLetters != 0)
+                {
+                    if (SearchList(Letter, chr) == true)
+                        System.Console.WriteLine("Right Guess");
                     System.Console.Write($"Letters Guessed So Far: ");
                     foreach(var item in Letter)
                         System.Console.Write($"{item} ");
                     System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    PrintMap(HangingPic);
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    break;
-                    case 4:
-                    HangingPic[20] = "|";
-                    System.Console.Write($"Letters Guessed So Far: ");
-                    foreach(var item in Letter)
-                        System.Console.Write($"{item} ");
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    PrintMap(HangingPic);
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    break;
-                    case 3:
-                    HangingPic[19] = "/";
-                    System.Console.Write($"Letters Guessed So Far: ");
-                    foreach(var item in Letter)
-                        System.Console.Write($"{item} ");
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    PrintMap(HangingPic);
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    break;
-                    case 2:
-                    HangingPic[21] = "\\";
-                    System.Console.Write($"Letters Guessed So Far: ");
-                    foreach(var item in Letter)
-                        System.Console.Write($"{item} ");
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    PrintMap(HangingPic);
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    break;
-                    case 1:
-                    HangingPic[28] = "/";
-                    System.Console.Write($"Letters Guessed So Far: ");
-                    foreach(var item in Letter)
-                        System.Console.Write($"{item} ");
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    PrintMap(HangingPic);
-                    System.Console.WriteLine();
-                    System.Console.WriteLine();
-                    break;
+                }
+                else if (RemainingLetters == 0)
+                {
+                    if (SearchList(Letter, chr) == true)
+                    {
+                    attempts--;
+                    switch (attempts)
+                    {
+                        case 5:
+                        HangingPic = Map();
+                        HangingPic[11] = "O";
+                        System.Console.Write($"Letters Guessed So Far: ");
+                        foreach(var item in Letter)
+                            System.Console.Write($"{item} ");
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        PrintMap(HangingPic);
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        break;
+                        case 4:
+                        HangingPic[20] = "|";
+                        System.Console.Write($"Letters Guessed So Far: ");
+                        foreach(var item in Letter)
+                            System.Console.Write($"{item} ");
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        PrintMap(HangingPic);
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        break;
+                        case 3:
+                        HangingPic[19] = "/";
+                        System.Console.Write($"Letters Guessed So Far: ");
+                        foreach(var item in Letter)
+                            System.Console.Write($"{item} ");
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        PrintMap(HangingPic);
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        break;
+                        case 2:
+                        HangingPic[21] = "\\";
+                        System.Console.Write($"Letters Guessed So Far: ");
+                        foreach(var item in Letter)
+                            System.Console.Write($"{item} ");
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        PrintMap(HangingPic);
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        break;
+                        case 1:
+                        HangingPic[28] = "/";
+                        System.Console.Write($"Letters Guessed So Far: ");
+                        foreach(var item in Letter)
+                            System.Console.Write($"{item} ");
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        PrintMap(HangingPic);
+                        System.Console.WriteLine();
+                        System.Console.WriteLine();
+                        break;
+                    }
+                    }
                 }
                 if (attempts == 0 && Length > 0)
                 {
@@ -177,6 +197,25 @@ namespace Test1
                     j++;
             }
             return j;
+        }
+        public static bool SearchList(List<string> letter, string chr)
+        {
+            int ctr = 0;
+            letter.Add("");
+            if (chr.Length > 1 || chr == null || chr.Length == 0)
+                return false;
+            else
+            {
+                foreach (var item in letter)
+                {
+                    if (item == chr)
+                        ctr++;
+                }
+            }
+            if (ctr == 1)
+                return true;
+            else
+                return false;
         }
     }
 }
