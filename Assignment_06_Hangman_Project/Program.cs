@@ -8,7 +8,7 @@ namespace Test1
         static void Main(string[] args)
         {
             string Word = RandomWord();
-            Console.WriteLine(Word); // For Testing The Program
+            // Console.WriteLine(Word); // For Testing The Program
             int Length = Word.Length;
             int attempts = 6;
             int RemainingLetters = 0;
