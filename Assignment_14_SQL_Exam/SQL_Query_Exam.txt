@@ -1,0 +1,122 @@
+/* Q1: Match Number With Most Extra Time In Second Half
+------------------*/
+select MM.match_no 'Match Number' from match_mast MM 
+where MM.stop2_sec = (Select Max([stop2_sec]) from match_mast)
+
+
+/* Q2: Longest Extra Time In Second Half
+------------------*/
+select MM.stop2_sec 'Extra Time (Seconds)' from match_mast MM 
+where MM.stop2_sec = (Select Max([stop2_sec]) from match_mast)
+
+
+/* Q3: GoalKeepers From Lazio
+------------------*/
+select PM.player_name 'Lazio Goalkeepers', (select count(*) from player_mast where playing_club = 'Lazio' and posi_to_play = 'GK') 'Total Number' from player_mast PM
+where (PM.playing_club = 'Lazio' and PM.posi_to_play = 'GK')
+
+
+
+/* Q4: Player Of The Match
+------------------*/
+Exec [dbo].[Player_of_the_Match] @PlayerID = 160476  /*@PlayerID = 160475*/
+
+/* Stored Procedure Script */
+USE [SOCCER_DB]
+GO
+/****** Object:  StoredProcedure [dbo].[Player_of_the_Match]    Script Date: 8/15/2022 4:37:41 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+Create PROCEDURE [dbo].[Player_of_the_Match] 
+	-- Add the parameters for the stored procedure here
+	@PlayerID float
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	if 
+	exists (select * from match_mast where match_mast.plr_of_match = @PlayerID)
+	Begin
+		SELECT MM.match_no 'Match Number', PM.player_name 'Player Name' from [dbo].[match_mast] MM inner join [dbo].[player_mast] PM 
+		on MM.plr_of_match = PM.player_id
+			where MM.plr_of_match=@PlayerID
+	End 
+	Else
+	Begin
+		Print 'Not Have Been Selected As The Player of the Match During The Tournament'
+	End
+END
+
+
+/* Q5: Both Captain And GK of The Team
+------------------*/
+SELECT DISTINCT PM.player_name, SC.country_name from [dbo].[player_mast] PM inner join [dbo].[match_captain] MC on MC.player_captain = PM.player_id
+inner join [dbo].[Soccer Country] SC on SC.country_id = PM.team_id where PM.posi_to_play = 'GK'
+
+
+/* Q6: Matches Decided By Penalty
+------------------*/
+select MM.match_no 'Match Number', SC.country_name 'Team' from [dbo].[match_details] MM inner join [dbo].[Soccer Country] SC on MM.team_id=SC.country_id
+where MM.decided_by = 'P' order by [Match Number]
+
+
+/* Q7: Winners of The Matches Decided By Penalty
+------------------*/
+select MM.match_no 'Match Number', SC.country_name 'Winner' from [dbo].[match_details] MM inner join[dbo].[Soccer Country] SC on MM.team_id = SC.country_id
+where MM.decided_by = 'P' and MM.win_lose = 'W' order by MM.match_no
+
+
+/* Q8: Goalkeepers of The Matches Decided By Penalty
+------------------*/
+select PG.match_no 'Match Number', PM.player_name 'Goalkeeper Name', SC.country_name 'Team' from [dbo].[penalty_gk] PG inner join [dbo].[Soccer Country] SC on SC.country_id = PG.team_id
+inner join [dbo].[player_mast] PM on PG.player_gk = PM.player_id order by PG.match_no
+
+
+/* Q9: Teams With No Subs Before 80
+------------------*/
+select match_no 'Match Number', Sc.country_name 'Team' from [dbo].[player_in_out] PIO inner join [dbo].[Soccer Country] SC on PIO.team_id = SC.country_id
+where PIO.time_in_out < 80 and PIO.in_out = 'I'
+group by match_no , country_name having count(*) = 3 order by match_no
+
+
+/* Q10: Last Name Of The Assist referee
+------------------*/
+
+exec [dbo].[Asst_ref_LastName] @AsstID=80014
+
+/* Stored Procedure Script */
+USE [SOCCER_DB]
+GO
+/****** Object:  StoredProcedure [dbo].[Asst_ref_LastName]    Script Date: 8/15/2022 4:47:49 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+create PROCEDURE [dbo].[Asst_ref_LastName]
+	-- Add the parameters for the stored procedure here
+	@AsstID int
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	
+    -- Insert statements for procedure here
+	SELECT SUBSTRING(ass_ref_name, CHARINDEX(' ', ass_ref_name) + 1, LEN(ass_ref_name)) 'Assist Referee LastName' from [dbo].[asst_referee_mast] ARM where ARM.ass_ref_id = @AsstID
+END
